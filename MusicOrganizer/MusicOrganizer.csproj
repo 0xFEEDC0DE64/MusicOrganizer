@@ -37,6 +37,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,12 +50,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ListViewPrinter\ListViewPrinter2012.csproj">
+      <Project>{e73a10bd-2b5a-4bac-897f-3a58cfc07631}</Project>
+      <Name>ListViewPrinter2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObjectListView\ObjectListView2012.csproj">
+      <Project>{18feda0c-d147-4286-b39a-01204808106a}</Project>
+      <Name>ObjectListView2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SparkleLibrary\SparkleLibrary2012.csproj">
+      <Project>{d63f9786-b608-4085-af08-d909448b0426}</Project>
+      <Name>SparkleLibrary2012</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
