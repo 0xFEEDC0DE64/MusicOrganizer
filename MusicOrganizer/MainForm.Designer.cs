@@ -120,7 +120,7 @@
             this.Controls.Add(this.objectListView1);
             this.Controls.Add(this.panel1);
             this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Text = "Music organizer";
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.objectListView1)).EndInit();
             this.ResumeLayout(false);

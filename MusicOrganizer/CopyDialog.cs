@@ -2,25 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace MusicOrganizer
 {
-    internal partial class IndexDialog : Form
+    internal partial class CopyDialog : Form
     {
-        private string musicFolder;
         private List<Item> items;
-        private string[] paths;
+        private string targetFolder;
 
-        public List<Item> Items { get { return items; } }
-
-        public IndexDialog()
+        public CopyDialog()
         {
             InitializeComponent();
         }
 
-        public DialogResult Execute()
+        public DialogResult Execute(List<Item> items)
         {
             using (var dialog = new FolderBrowserDialog())
             {
@@ -32,38 +28,20 @@ namespace MusicOrganizer
                 if (string.IsNullOrWhiteSpace(dialog.SelectedPath))
                     return DialogResult.Cancel;
 
-                musicFolder = dialog.SelectedPath;
+                targetFolder = dialog.SelectedPath;
             }
 
-            if (!musicFolder.EndsWith("\\") && !musicFolder.EndsWith("/"))
-                musicFolder += Path.DirectorySeparatorChar;
-
-            again0:
-            try
-            {
-                paths = Directory.GetFileSystemEntries(musicFolder, "*.mp3", SearchOption.AllDirectories);
-            }
-            catch (Exception ex)
-            {
-                var result = MessageBox.Show(string.Format("Error occured when collecting files\n\n{0}", ex.Message), "Error occured", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-
-                switch (result)
-                {
-                    case DialogResult.Retry: goto again0;
-                    case DialogResult.Cancel: return DialogResult.Cancel;
-                    default: throw new Exception("Unknown option clicked.");
-                }
-            }
+            this.items = items;
 
             return ShowDialog();
         }
 
-        private void IndexDialog_Load(object sender, EventArgs e)
+        private void CopyDialog_Load(object sender, EventArgs e)
         {
             backgroundWorker.RunWorkerAsync();
         }
 
-        private void IndexDialog_FormClosing(object sender, FormClosingEventArgs e)
+        private void CopyDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (backgroundWorker.IsBusy)
             {
@@ -86,7 +64,7 @@ namespace MusicOrganizer
         {
             if (backgroundWorker.IsBusy)
             {
-                if(!backgroundWorker.CancellationPending)
+                if (!backgroundWorker.CancellationPending)
                     backgroundWorker.CancelAsync();
                 cancelButton.Enabled = false;
             }
@@ -101,49 +79,45 @@ namespace MusicOrganizer
         {
             var worker = sender as BackgroundWorker;
 
-            items = new List<Item>();
-
-            for (int i = 0; i < paths.Length; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                var path = paths[i];
-                var statusStr = Path.GetFileName(path) + ": ";
+                var item = items[i];
+                var statusStr = Path.GetFileName(item.filename) + ": ";
 
-                if(worker.CancellationPending)
+                if (worker.CancellationPending)
                 {
-                    worker.ReportProgress((i + 1) * 100 / paths.Length, statusStr + "Cancelled!");
+                    worker.ReportProgress((i + 1) * 100 / items.Count, statusStr + "Cancelled!");
                     e.Cancel = true;
                     return;
                 }
 
-                worker.ReportProgress((i + 1) * 100 / paths.Length, statusStr + "Indexing...");
+                var bpmPath = Path.Combine(targetFolder, item.bpm);
 
-                TagLib.File file;
-                
+                if (!Directory.Exists(bpmPath))
+                    try
+                    {
+                        worker.ReportProgress((i + 1) * 100 / items.Count, statusStr + "Creating bpm folder...");
+                        Directory.CreateDirectory(bpmPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        worker.ReportProgress((i + 1) * 100 / items.Count, statusStr + "Exception:\r\n" + ex.Message);
+                        continue;
+                    }
+
+                var target = Path.Combine(bpmPath, Path.GetFileName(item.filename));
+
+                worker.ReportProgress((i + 1) * 100 / items.Count, statusStr + "Copying...");
+
                 try
                 {
-                    file = TagLib.File.Create(path);
+                    File.Copy(item.filename, target);
                 }
                 catch (Exception ex)
                 {
-                    worker.ReportProgress((i + 1) * 100 / paths.Length, statusStr + "Exception!\r\n" + ex.Message);
-                    Thread.Sleep(5000);
+                    worker.ReportProgress((i + 1) * 100 / items.Count, statusStr + "Exception:\r\n" + ex.Message);
                     continue;
                 }
-
-                string relativePath;
-                if (path.StartsWith(musicFolder))
-                    relativePath = path.Remove(0, musicFolder.Length);
-                else
-                    relativePath = path;
-
-                items.Add(new Item
-                {
-                    filename = path,
-                    relativeFilename = relativePath,
-                    artist = file.Tag.FirstPerformer,
-                    title = file.Tag.Title,
-                    bpm = string.Format("{0}BPM", file.Tag.BeatsPerMinute)
-                });
             }
         }
 
@@ -155,7 +129,7 @@ namespace MusicOrganizer
 
         private void backgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            if(e.Cancelled)
+            if (e.Cancelled)
             {
                 DialogResult = DialogResult.Cancel;
                 Close();

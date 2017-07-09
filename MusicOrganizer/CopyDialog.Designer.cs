@@ -1,6 +1,6 @@
 ﻿namespace MusicOrganizer
 {
-    partial class IndexDialog
+    partial class CopyDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -81,7 +81,7 @@
             this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
             this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
             // 
-            // IndexDialog
+            // CopyDialog
             // 
             this.AcceptButton = this.continueButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -92,10 +92,10 @@
             this.Controls.Add(this.continueButton);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.statusLabel);
-            this.Name = "IndexDialog";
-            this.Text = "Indexing progress";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.IndexDialog_FormClosing);
-            this.Load += new System.EventHandler(this.IndexDialog_Load);
+            this.Name = "CopyDialog";
+            this.Text = "Copying progress";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CopyDialog_FormClosing);
+            this.Load += new System.EventHandler(this.CopyDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
