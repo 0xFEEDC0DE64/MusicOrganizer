@@ -47,7 +47,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(629, 61);
+            this.panel1.Size = new System.Drawing.Size(846, 61);
             this.panel1.TabIndex = 0;
             // 
             // button2
@@ -84,7 +84,7 @@
             this.objectListView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.objectListView1.Location = new System.Drawing.Point(0, 61);
             this.objectListView1.Name = "objectListView1";
-            this.objectListView1.Size = new System.Drawing.Size(629, 773);
+            this.objectListView1.Size = new System.Drawing.Size(846, 773);
             this.objectListView1.TabIndex = 1;
             this.objectListView1.UseCompatibleStateImageBehavior = false;
             this.objectListView1.UseOverlays = false;
@@ -116,7 +116,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(629, 834);
+            this.ClientSize = new System.Drawing.Size(846, 834);
             this.Controls.Add(this.objectListView1);
             this.Controls.Add(this.panel1);
             this.Name = "MainForm";
